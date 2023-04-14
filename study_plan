@@ -1,0 +1,13 @@
+* Next Greater Element 1
+	* https://leetcode.com/problems/next-greater-element-i/
+	* monotonic increasing stack
+* Find Pivot Index
+	* https://leetcode.com/problems/find-pivot-index/editorial/
+	* prefix sum
+* Range Sum Query -- Immutable
+	* https://leetcode.com/problems/range-sum-query-immutable/
+	* prefix sum
+* Sort Array
+	* https://leetcode.com/problems/sort-an-array/
+	* be able to do merge off the top of my head
+
