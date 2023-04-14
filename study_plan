@@ -10,4 +10,7 @@
 * Sort Array
 	* https://leetcode.com/problems/sort-an-array/
 	* be able to do merge off the top of my head
+* Top K Frequent Elements
+	* https://leetcode.com/problems/top-k-frequent-elements/description/
+	* quick select, bucket sort
 
