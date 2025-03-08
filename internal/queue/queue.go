@@ -30,7 +30,7 @@ func (q *RingBufferQueue) Dequeue() (rune, bool) {
 	}
 
 	r := q.buff[q.head]
-	q.buff[q.head] = 0 // clear old value to default rune value
+	q.buff[q.head] = 0
 	q.head = (q.head + 1) % q.capacity
 	return r, true
 }
