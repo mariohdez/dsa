@@ -46,3 +46,4 @@ func (q *RingBufferQueue) isEmpty() bool {
 func (q *RingBufferQueue) Size() int {
 	return (q.tail - q.head + q.capacity) % q.capacity
 }
+
