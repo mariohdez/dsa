@@ -14,10 +14,6 @@ func NewRingBufferQueue(bufferSize int) *RingBufferQueue {
 	}
 }
 
-func (q *RingBufferQueue) Capacity() int {
-	return q.capacity - 1
-}
-
 func (q *RingBufferQueue) Enqueue(r rune) bool {
 	if q.isFull() {
 		return false
@@ -34,6 +30,7 @@ func (q *RingBufferQueue) Dequeue() (rune, bool) {
 	}
 
 	r := q.buff[q.head]
+	q.buff[q.head] = 0 // clear old value to default rune value
 	q.head = (q.head + 1) % q.capacity
 	return r, true
 }
@@ -46,6 +43,6 @@ func (q *RingBufferQueue) isEmpty() bool {
 	return q.head == q.tail
 }
 
-func (q *RingBufferQueue) NumberOfElementsInQueue() int {
+func (q *RingBufferQueue) Size() int {
 	return (q.tail - q.head + q.capacity) % q.capacity
 }

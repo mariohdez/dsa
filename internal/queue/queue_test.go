@@ -7,84 +7,116 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestEnqueue_WhenEmptyQueue_ReturnsTrue(t *testing.T) {
-	// Arrange.
-	q := queue.NewRingBufferQueue(2)
+func TestEnqueue(t *testing.T) {
+	t.Run("When empty, returns true", func(t *testing.T) {
+		// Arrange.
+		q := queue.NewRingBufferQueue(2)
 
-	// Act.
-	ok := q.Enqueue(1)
-	q.Print()
-	ok = q.Enqueue(2)
-	q.Print()
+		// Act.
+		ok := q.Enqueue(1)
 
-	// Assert.
-	assert.True(t, ok)
+		// Assert.
+		assert.True(t, ok)
+
+	})
+
+	t.Run("When available capacity, returns true", func(t *testing.T) {
+		// Arrange.
+		q := queue.NewRingBufferQueue(2)
+		ok := q.Enqueue(1)
+
+		// Act.
+		ok = q.Enqueue(2)
+
+		// Assert.
+		assert.True(t, ok)
+	})
+
+	t.Run("When available capacity, returns false", func(t *testing.T) {
+		// Arrange.
+		q := queue.NewRingBufferQueue(2)
+		ok := q.Enqueue(1)
+		ok = q.Enqueue(2)
+
+		// Act.
+		ok = q.Enqueue(3)
+
+		// Assert.
+		assert.False(t, ok)
+	})
 }
 
-func TestEnqueue_WhenQueueIsNonEmpty_ReturnsTrue(t *testing.T) {
-	// Arrange.
-	q := queue.NewLLQueue()
-	q.Enqueue(1)
+func TestDequeue(t *testing.T) {
+	t.Run("When empty, returns false", func(t *testing.T) {
+		// Arrange.
+		q := queue.NewRingBufferQueue(2)
 
-	// Act.
-	ok := q.Enqueue(2)
+		// Act.
+		_, deqOk := q.Dequeue()
 
-	// Assert.
-	assert.True(t, ok)
+		// Assert.
+		assert.False(t, deqOk)
+	})
+
+	t.Run("When queue is not empty, returns first enqueued element", func(t *testing.T) {
+		// Arrange.
+		q := queue.NewRingBufferQueue(2)
+		q.Enqueue(1)
+		q.Enqueue(2)
+
+		// Act, and assert.
+		r, deqOk := q.Dequeue()
+		assert.True(t, deqOk)
+		assert.Equal(t, rune(1), r)
+		r, deqOk = q.Dequeue()
+		assert.True(t, deqOk)
+		assert.Equal(t, rune(2), r)
+	})
 }
 
-func TestDequeue_WhenEmptyQueue_ReturnsFalse(t *testing.T) {
-	// Arrange.
-	q := queue.NewLLQueue()
+func TestSize(t *testing.T) {
+	t.Run("when no wrap around, return correct size", func(t *testing.T) {
+		// Arrange.
+		q := queue.NewRingBufferQueue(2)
+		q.Enqueue(1)
 
-	// Act.
-	_, ok := q.Dequeue()
+		// Act.
+		s := q.Size()
 
-	// Assert.
-	assert.False(t, ok)
-}
+		// Assert.
+		assert.Equal(t, 1, s)
+	})
 
-func TestDequeue_WhenMultipleDequeuesCreatesEmptyQueue_ReturnsFalse(t *testing.T) {
-	// Arrange.
-	q := queue.NewLLQueue()
-	q.Enqueue(1)
-	q.Enqueue(2)
+	t.Run("When wrap around, returns correct size", func(t *testing.T) {
+		// Arrange
+		q := queue.NewRingBufferQueue(2)
+		q.Enqueue(1)
+		q.Enqueue(2)
+		q.Dequeue()
+		q.Enqueue(3)
 
-	num, ok := q.Dequeue()
-	assert.True(t, ok)
-	assert.Equal(t, 1, num)
+		// Act.
+		numOfElements := q.Size()
 
-	num, ok = q.Dequeue()
-	assert.True(t, ok)
-	assert.Equal(t, 2, num)
+		// Assert.
+		assert.Equal(t, 2, numOfElements)
+	})
 
-	// Act.
-	_, ok = q.Dequeue()
+	t.Run("When wrap around happens multiple times, returns correct size", func(t *testing.T) {
+		// Arrange
+		q := queue.NewRingBufferQueue(2)
+		q.Enqueue(1)
+		q.Enqueue(2)
+		q.Dequeue()
+		q.Dequeue()
+		q.Enqueue(3)
+		q.Enqueue(4)
 
-	// Assert.
-	assert.False(t, ok)
-}
+		// Act.
+		numOfElements := q.Size()
 
-func TestDequeue_WhenMultipleDequeuesCreatesEmptyQueueThenEnqueueANumber_ReturnsCorrectValueAndFalse(t *testing.T) {
-	// Arrange.
-	q := queue.NewLLQueue()
-	q.Enqueue(1)
-	q.Enqueue(2)
+		// Assert.
+		assert.Equal(t, 2, numOfElements)
 
-	num, ok := q.Dequeue()
-	assert.True(t, ok)
-	assert.Equal(t, 1, num)
-
-	num, ok = q.Dequeue()
-	assert.True(t, ok)
-	assert.Equal(t, 2, num)
-
-	q.Enqueue(10)
-
-	// Act.
-	num, ok = q.Dequeue()
-
-	// Assert.
-	assert.True(t, ok)
-	assert.Equal(t, 10, num)
+	})
 }

@@ -1,0 +1,14 @@
+# Binaries
+*.exe
+*.out
+*.o
+*.a
+*.so
+
+# Go build artifacts
+bin/
+pkg/
+
+# goland stuff
+.idea/
+
